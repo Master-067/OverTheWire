@@ -1,2 +1,690 @@
 // This file has answers for level bandit
 
+## 🔐 Level 0 → 1
+
+```bash
+ssh bandit0@bandit.labs.overthewire.org -p 2220
+# password: bandit0
+
+ls
+cat readme
+```
+
+---
+
+## 🔐 Level 1 → 2
+
+📌 File name is `-` (special character)
+
+```bash
+ls
+cat ./-
+```
+
+---
+
+## 🔐 Level 2 → 3
+
+📌 File name has spaces
+
+```bash
+ls
+cat "spaces in this filename"
+```
+
+---
+
+## 🔐 Level 3 → 4
+
+📌 Hidden file
+
+```bash
+ls -a
+cat .hidden
+```
+
+---
+
+## 🔐 Level 4 → 5
+
+📌 Human-readable file among many
+
+```bash
+ls
+file ./*
+cat ./-file07   # (example; check which says ASCII text)
+```
+
+---
+
+## 🔐 Level 5 → 6
+
+📌 File with:
+
+* size = 1033 bytes
+* not executable
+* human-readable
+
+```bash
+find . -type f -size 1033c ! -executable
+cat ./path/to/file
+```
+
+---
+
+## 🔐 Level 6 → 7
+
+📌 File owned by user `bandit7`, group `bandit6`, size 33 bytes
+
+```bash
+find / -type f -user bandit7 -group bandit6 -size 33c 2>/dev/null
+cat /path/to/file
+```
+
+---
+
+## 🔐 Level 7 → 8
+
+📌 Password next to word "millionth"
+
+```bash
+grep "millionth" data.txt
+```
+
+---
+
+## 🔐 Level 8 → 9
+
+📌 Unique line in file
+
+```bash
+sort data.txt | uniq -u
+```
+
+---
+
+## 🔐 Level 9 → 10
+
+📌 Human-readable strings
+
+```bash
+strings data.txt | grep "="
+```
+
+---
+
+## 🔐 Level 10 → 11
+
+📌 Base64 encoded
+
+```bash
+base64 -d data.txt
+```
+
+
+Alright—here’s a clean, exam-friendly walkthrough for **Bandit levels 11–20** from OverTheWire. I’ll keep it step-by-step with just enough explanation so you actually understand what’s happening.
+
+---
+
+# 🔐 Bandit Levels 11 → 20
+
+---
+
+## 🔐 Level 11 → 12
+
+📌 Data is encoded with **ROT13**
+
+```bash
+cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+```
+
+👉 This shifts letters by 13 places (ROT13 cipher).
+
+---
+
+## 🔐 Level 12 → 13
+
+📌 File is repeatedly compressed
+
+### Steps:
+
+```bash
+mkdir /tmp/mydir
+cp data.txt /tmp/mydir
+cd /tmp/mydir
+
+xxd -r data.txt > file
+file file
+```
+
+👉 Then repeatedly:
+
+```bash
+mv file file.gz
+gunzip file.gz
+```
+
+👉 Or:
+
+* `bunzip2`
+* `tar -xvf`
+* `gzip -d`
+
+✔ Keep checking with `file` until you get plain text, then:
+
+```bash
+cat file
+```
+
+---
+
+## 🔐 Level 13 → 14
+
+📌 Use SSH private key
+
+```bash
+ssh -i sshkey.private bandit14@localhost -p 2220
+```
+
+👉 Then:
+
+```bash
+cat /etc/bandit_pass/bandit14
+```
+
+---
+
+## 🔐 Level 14 → 15
+
+📌 Send password via **netcat**
+
+```bash
+cat /etc/bandit_pass/bandit14 | nc localhost 30000
+```
+
+👉 Output gives next password.
+
+---
+
+## 🔐 Level 15 → 16
+
+📌 SSL connection
+
+```bash
+openssl s_client -connect localhost:30001
+```
+
+👉 Then paste password manually.
+
+---
+
+## 🔐 Level 16 → 17
+
+📌 Find correct port (31000–32000) with SSL
+
+```bash
+nmap -p 31000-32000 localhost
+```
+
+👉 Look for **open SSL port**
+
+Then:
+
+```bash
+openssl s_client -connect localhost:PORT
+```
+
+👉 Output gives **SSH private key**
+
+Save it:
+
+```bash
+nano key
+chmod 600 key
+ssh -i key bandit17@localhost -p 2220
+```
+
+---
+
+## 🔐 Level 17 → 18
+
+📌 Compare two files
+
+```bash
+diff passwords.old passwords.new
+```
+
+👉 The changed line is the password.
+
+---
+
+## 🔐 Level 18 → 19
+
+📌 `.bashrc` logs you out
+
+👉 Bypass shell:
+
+```bash
+ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
+```
+
+---
+
+## 🔐 Level 19 → 20
+
+📌 Use setuid binary
+
+```bash
+./bandit20-do cat /etc/bandit_pass/bandit20
+```
+
+👉 This runs command as another user.
+
+---
+
+## 🔐 Level 20 → 21
+
+📌 Use netcat listener
+
+### Terminal 1:
+
+```bash
+nc -l -p 12345
+```
+
+### Terminal 2:
+
+```bash
+./suconnect 12345
+```
+
+## 🔐 Level 11 → 12
+
+📌 Data is encoded with **ROT13**
+
+```bash
+cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+```
+
+👉 This shifts letters by 13 places (ROT13 cipher).
+
+---
+
+## 🔐 Level 12 → 13
+
+📌 File is repeatedly compressed
+
+### Steps:
+
+```bash
+mkdir /tmp/mydir
+cp data.txt /tmp/mydir
+cd /tmp/mydir
+
+xxd -r data.txt > file
+file file
+```
+
+👉 Then repeatedly:
+
+```bash
+mv file file.gz
+gunzip file.gz
+```
+
+👉 Or:
+
+* `bunzip2`
+* `tar -xvf`
+* `gzip -d`
+
+✔ Keep checking with `file` until you get plain text, then:
+
+```bash
+cat file
+```
+
+---
+
+## 🔐 Level 13 → 14
+
+📌 Use SSH private key
+
+```bash
+ssh -i sshkey.private bandit14@localhost -p 2220
+```
+
+👉 Then:
+
+```bash
+cat /etc/bandit_pass/bandit14
+```
+
+---
+
+## 🔐 Level 14 → 15
+
+📌 Send password via **netcat**
+
+```bash
+cat /etc/bandit_pass/bandit14 | nc localhost 30000
+```
+
+👉 Output gives next password.
+
+---
+
+## 🔐 Level 15 → 16
+
+📌 SSL connection
+
+```bash
+openssl s_client -connect localhost:30001
+```
+
+👉 Then paste password manually.
+
+---
+
+## 🔐 Level 16 → 17
+
+📌 Find correct port (31000–32000) with SSL
+
+```bash
+nmap -p 31000-32000 localhost
+```
+
+👉 Look for **open SSL port**
+
+Then:
+
+```bash
+openssl s_client -connect localhost:PORT
+```
+
+👉 Output gives **SSH private key**
+
+Save it:
+
+```bash
+nano key
+chmod 600 key
+ssh -i key bandit17@localhost -p 2220
+```
+
+---
+
+## 🔐 Level 17 → 18
+
+📌 Compare two files
+
+```bash
+diff passwords.old passwords.new
+```
+
+👉 The changed line is the password.
+
+---
+
+## 🔐 Level 18 → 19
+
+📌 `.bashrc` logs you out
+
+👉 Bypass shell:
+
+```bash
+ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
+```
+
+---
+
+## 🔐 Level 19 → 20
+
+📌 Use setuid binary
+
+```bash
+./bandit20-do cat /etc/bandit_pass/bandit20
+```
+
+👉 This runs command as another user.
+
+---
+
+## 🔐 Level 20 → 21
+
+📌 Use netcat listener
+
+### Terminal 1:
+
+```bash
+nc -l -p 12345
+```
+
+### Terminal 2:
+
+```bash
+./suconnect 12345
+```
+
+👉 Paste password → get next password.
+
+---
+
+## 🔐 Level 21 → 22
+
+📌 **Cron job runs a script**
+
+```bash
+ls /etc/cron.d
+cat /etc/cron.d/cronjob_bandit22
+cat /usr/bin/cronjob_bandit22.sh
+```
+
+👉 Script writes password to `/tmp/...`
+
+```bash
+cat /tmp/<filename>
+```
+
+---
+
+## 🔐 Level 22 → 23
+
+📌 **Filename is hashed**
+
+```bash
+cat /usr/bin/cronjob_bandit23.sh
+```
+
+👉 You’ll see something like:
+
+```bash
+echo I am user bandit23 | md5sum
+```
+
+Recreate it:
+
+```bash
+echo "I am user bandit23" | md5sum
+```
+
+Then:
+
+```bash
+cat /tmp/<hash>
+```
+
+---
+
+## 🔐 Level 23 → 24
+
+📌 **Script executes everything in a directory**
+
+```bash
+cat /usr/bin/cronjob_bandit24.sh
+```
+
+👉 It runs scripts from `/var/spool/...`
+
+### Exploit:
+
+```bash
+mkdir /tmp/myhack
+echo 'cat /etc/bandit_pass/bandit24 > /tmp/output' > /tmp/myhack/script.sh
+chmod +x /tmp/myhack/script.sh
+cp /tmp/myhack/script.sh /var/spool/bandit24/
+```
+
+Wait a minute:
+
+```bash
+cat /tmp/output
+```
+
+---
+
+## 🔐 Level 24 → 25
+
+📌 **Brute-force 4-digit PIN**
+
+```bash
+for i in {0000..9999}
+do
+  echo "password $i"
+done | nc localhost 30002
+```
+
+👉 Correct PIN returns password.
+
+---
+
+## 🔐 Level 25 → 26
+
+📌 **SSH works but shell exits**
+
+```bash
+ssh bandit26@localhost -p 2220
+```
+
+👉 Trick: use `more` editor
+
+Resize terminal small → get into `more`
+
+Then:
+
+```
+v
+```
+
+👉 Opens editor → escape shell:
+
+```
+:set shell=/bin/bash
+:shell
+```
+
+Then:
+
+```bash
+cat /etc/bandit_pass/bandit26
+```
+
+---
+
+## 🔐 Level 26 → 27
+
+📌 **Setuid binary**
+
+```bash
+ls -l
+./bandit27-do cat /etc/bandit_pass/bandit27
+```
+
+---
+
+## 🔐 Level 27 → 28
+
+📌 **Git repository**
+
+```bash
+git clone ssh://bandit27-git@localhost/home/bandit27-git/repo
+cd repo
+cat README
+```
+
+---
+
+## 🔐 Level 28 → 29
+
+📌 **Hidden in git history**
+
+```bash
+git log
+git show <commit_id>
+```
+
+---
+
+## 🔐 Level 29 → 30
+
+📌 **Different branch**
+
+```bash
+git branch -a
+git checkout dev
+cat README.md
+```
+
+---
+
+## 🔐 Level 30 → 31
+
+📌 **Git tags**
+
+```bash
+git tag
+git show <tag>
+```
+
+---
+
+## 🔐 Level 31 → 32
+
+📌 **Push required**
+
+```bash
+echo "May I come in?" > key.txt
+git add key.txt
+git commit -m "add key"
+git push
+```
+
+👉 Server responds with password.
+
+---
+
+## 🔐 Level 32 → 33
+
+📌 **Restricted shell**
+
+```bash
+$0
+```
+
+👉 Gives normal shell
+
+```bash
+cat /etc/bandit_pass/bandit33
+```
+
+---
+
+## 🔐 Level 33 → 34 (Final)
+
+📌 Final level — just login:
+
+```bash
+cat /etc/bandit_pass/bandit34
+```
+
+ 
